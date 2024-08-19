@@ -1,11 +1,2 @@
-FROM semtech/mu-javascript-template
-WORKDIR /app
-
-COPY . /app
-
-# Set environment variables
+FROM semtech/mu-javascript-template:1.8.0
 ENV NODE_ENV=development
-
-EXPOSE 80
-
-CMD ["npm", "start"]
