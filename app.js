@@ -55,6 +55,8 @@ app.get('/bestuurseenheid-data', async function(req, res) {
                   OPTIONAL { ?identifier skos:notation ?rrn . }
         }
       FILTER (?PubliekeOrganisatie = <${bestuurseenheid}>)
+      FILTER (!(CONTAINS(LCASE(?bestuursorgaanTijdsspecialisatieLabel), "burgemeester") && !CONTAINS(LCASE(?bestuursorgaanTijdsspecialisatieLabel), "college")))
+      FILTER (?statusLabel IN ("Effectief", "Waarnemend"))
     } 
     ORDER BY ?bestuursorgaanTijdsspecialisatieLabel ?rolLabel ?achternaam
     LIMIT 1000
