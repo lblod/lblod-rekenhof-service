@@ -28,7 +28,7 @@ app.get('/bestuurseenheid-data', async function(req, res) {
     PREFIX adms: <http://www.w3.org/ns/adms#>
     PREFIX besluit: <http://data.vlaanderen.be/ns/besluit#>
 
-    SELECT DISTINCT ?voornaam ?achternaam ?geboortedatum ?geslacht ?rrn ?bestuursorgaanTijdsspecialisatieLabel ?statusLabel ?startdatum ?einddatum ?mandataris ?person ?identifier ?holds_mandaat ?rol ?bestuursorgaanTijdsspecialisatie ?bestuursorgaanPermanent ?PubliekeOrganisatie WHERE {
+    SELECT DISTINCT ?voornaam ?achternaam ?geboortedatum ?geslacht ?rrn ?bestuursorgaanTijdsspecialisatieLabel ?rolLabel ?statusLabel ?startdatum ?einddatum ?mandataris ?person ?identifier ?holds_mandaat ?rol ?bestuursorgaanTijdsspecialisatie ?bestuursorgaanPermanent ?PubliekeOrganisatie WHERE {
 
         ?mandataris a mandaat:Mandataris .
         ?mandataris mandaat:isBestuurlijkeAliasVan ?person .
@@ -37,6 +37,7 @@ app.get('/bestuurseenheid-data', async function(req, res) {
 
         ?mandataris org:holds ?holds_mandaat .
         ?holds_mandaat org:role ?rol . 
+        ?rol skos:prefLabel ?rolLabel .
 
         ?bestuursorgaanTijdsspecialisatie org:hasPost ?holds_mandaat . 
         ?bestuursorgaanTijdsspecialisatie mandaat:isTijdspecialisatieVan ?bestuursorgaanPermanent .
@@ -54,7 +55,9 @@ app.get('/bestuurseenheid-data', async function(req, res) {
                   OPTIONAL { ?identifier skos:notation ?rrn . }
         }
       FILTER (?PubliekeOrganisatie = <${bestuurseenheid}>)
-    } LIMIT 1000
+    } 
+    ORDER BY ?bestuursorgaanTijdsspecialisatieLabel ?rolLabel ?achternaam
+    LIMIT 1000
   `;
 
   const queryUrl = 'http://localhost:8890/sparql'; 
