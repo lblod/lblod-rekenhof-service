@@ -1,8 +1,4 @@
 import { app, query } from 'mu';
-import cors from 'cors';
-
-// allowing all origins for now
-app.use(cors());
 
 app.get('/hello', function(req, res) {
   res.send('Hello from rekenhof-api');
@@ -62,8 +58,7 @@ app.get('/bestuurseenheid-data', async function(req, res) {
     LIMIT 1000
   `;
 
-  const queryUrl = 'http://localhost:8890/sparql'; 
-  const fullUrl = `${queryUrl}?query=${encodeURIComponent(sparqlQuery)}`;
+
 
   try {
     const response = await query(sparqlQuery);
