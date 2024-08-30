@@ -1,34 +1,27 @@
 # lblod-rekenhof-api
- A microservice part of app-lokaal-mandatenbeheer:
- https://github.com/lblod/app-lokaal-mandatenbeheer
 
- Built using the mu-semtech stack:
- https://github.com/mu-semtech
+A microservice part of app-lokaal-mandatenbeheer:
+[https://github.com/lblod/app-lokaal-mandatenbeheer](https://github.com/lblod/app-lokaal-mandatenbeheer)
 
- This service has a single endpoint:
- GET /bestuurseenheid-data
-    Query parameters:
-        - bestuurseenheid (required): The URI of the "bestuurseenheid" for which the data is being requested.
-        (this is taken from the logged in "bestuurseenheid" in the frontend)
+Built using the mu-semtech stack:
+[https://github.com/mu-semtech](https://github.com/mu-semtech)
 
-        - filterAangifteplichtig (required): boolean that activates or deactivates a subquery that filters the results to only show "mandatarissen"
-        with at least 1 "aangifteplichtig" "mandaat"
+## Endpoint
 
+### GET /bestuurseenheid-data
 
-    Returned Data columns:
-    - voornaam
-    - achternaam
-    - geboortedatum
-    - geslacht
-    - rrn
-    - bestuursorgaanTijdsspecialisatieLabel (eg. "College van Burgemeester en Schepenen Aalst")
-    - rol (eg. "Burgemeester")
-    - statusLabel (eg. "Effectief")
-    - startdatum
-    - einddatum (if applicable)
+#### Query Parameters:
+- `bestuurseenheid` (required): The URI of the "bestuurseenheid" for which the data is being requested. (This is taken from the logged in "bestuurseenheid" in the frontend)
+- `filterAangifteplichtig` (required): Boolean that activates or deactivates a subquery that filters the results to only show "mandatarissen" with at least 1 "aangifteplichtig" "mandaat".
 
- 
-
-
-
-
+#### Returned Data Columns:
+- `voornaam`
+- `achternaam`
+- `geboortedatum`
+- `geslacht`
+- `rrn`
+- `bestuursorgaanTijdsspecialisatieLabel` (e.g., "College van Burgemeester en Schepenen Aalst")
+- `rol` (e.g., "Burgemeester")
+- `statusLabel` (e.g., "Effectief")
+- `startdatum`
+- `einddatum` (if applicable)
