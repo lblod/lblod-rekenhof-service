@@ -17,7 +17,8 @@ app.get('/bestuurseenheid-data', async function(req, res) {
     PREFIX adms: <http://www.w3.org/ns/adms#>
     PREFIX besluit: <http://data.vlaanderen.be/ns/besluit#>
 
-    SELECT DISTINCT ?voornaam ?achternaam ?geboortedatum ?geslacht ?rrn ?bestuursorgaanTijdsspecialisatieLabel ?rolLabel ?statusLabel ?startdatum ?einddatum ?mandataris ?person ?identifier ?holds_mandaat ?rol ?bestuursorgaanTijdsspecialisatie ?bestuursorgaanPermanent ?PubliekeOrganisatie WHERE {
+    SELECT DISTINCT ?voornaam ?achternaam ?geboortedatum ?geslacht ?rrn ?bestuursorgaanTijdsspecialisatieLabel ?rolLabel ?statusLabel ?startdatum ?einddatum # ?mandataris ?person ?identifier ?holds_mandaat ?rol ?bestuursorgaanTijdsspecialisatie ?bestuursorgaanPermanent ?PubliekeOrganisatie
+    WHERE {
 
         # Main query for fetching mandataris details
         ?mandataris a mandaat:Mandataris .
