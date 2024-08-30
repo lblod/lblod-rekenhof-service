@@ -51,21 +51,25 @@ app.get('/bestuurseenheid-data', async function(req, res) {
         }
 
         # Subquery to identify persons with aangifteplichtig mandaten
-        ${filterAangifteplichtig ? `
-        {
-            SELECT DISTINCT ?person WHERE {
-                ?mandataris a mandaat:Mandataris .
-                ?mandataris mandaat:isBestuurlijkeAliasVan ?person .
-                ?mandataris org:holds ?aangifteplichtigMandaat .
-                ?aangifteplichtigMandaat org:role ?aangifteplichtigRol .
-                ?aangifteplichtigRol skos:prefLabel ?aangifteplichtigRolLabel .
-                FILTER (?aangifteplichtigRolLabel IN ("Burgemeester", "Schepen", "Voorzitter van het OCMW"))
-            }
-        }
-        FILTER EXISTS {
-            ?mandataris mandaat:isBestuurlijkeAliasVan ?person .
-        }
-        ` : ''}
+          ${filterAangifteplichtig ? `
+          {
+              SELECT DISTINCT ?person WHERE {
+                  ?mandataris a mandaat:Mandataris .
+                  ?mandataris mandaat:isBestuurlijkeAliasVan ?person .
+                  ?mandataris org:holds ?aangifteplichtigMandaat .
+                  ?aangifteplichtigMandaat org:role ?aangifteplichtigRol .
+                  ?aangifteplichtigRol skos:prefLabel ?aangifteplichtigRolLabel .
+                  FILTER (
+                    ?aangifteplichtigRolLabel IN ("Burgemeester", "Schepen") ||
+                    (REGEX(?aangifteplichtigRolLabel, "Voorzitter", "i") && 
+                      !REGEX(?aangifteplichtigRolLabel, "Voorzitter van de gemeenteraad", "i"))
+                  )
+              }
+          }
+          FILTER EXISTS {
+              ?mandataris mandaat:isBestuurlijkeAliasVan ?person .
+          }
+          ` : ''}
 
     } 
     ORDER BY ?bestuursorgaanTijdsspecialisatieLabel ?rolLabel ?achternaam ?voornaam ?startdatum

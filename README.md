@@ -12,7 +12,7 @@ Built using the mu-semtech stack:
 
 #### Query Parameters:
 - `bestuurseenheid` (required): The URI of the "bestuurseenheid" for which the data is being requested. (This is taken from the logged in "bestuurseenheid" in the frontend)
-- `filterAangifteplichtig` (required): Boolean that activates or deactivates a subquery that filters the results to only show "mandatarissen" with at least 1 "aangifteplichtig" "mandaat".
+- `filterAangifteplichtig` (required): Boolean that activates or deactivates a subquery that filters the results to only show "mandatarissen" with at least 1 "aangifteplichtig" "mandaat". (it still returns all of their other mandates, as long as they have 1 aangifteplichtig mandaat)
 
 #### Returned Data Columns:
 - `voornaam`
@@ -25,3 +25,9 @@ Built using the mu-semtech stack:
 - `statusLabel` (e.g., "Effectief")
 - `startdatum`
 - `einddatum` (if applicable)
+
+
+#### Aangifteplichtige mandaten
+
+Mandaten currently treated as aangifteplichtig are `Schepen` , `Burgemeester` and any `Voorzitter` EXCEPT `Voorzitter van de gemeenteraad`
+(-> voorzitters of OCMW)
