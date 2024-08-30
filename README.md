@@ -6,6 +6,8 @@ A microservice part of app-lokaal-mandatenbeheer:
 Built using the mu-semtech stack:
 [https://github.com/mu-semtech](https://github.com/mu-semtech)
 
+Currently available on dockerhub as the repository: docker.io/owenhstudent/lbod-rekenhof-service
+
 ## Endpoint
 
 ### GET /bestuurseenheid-data
