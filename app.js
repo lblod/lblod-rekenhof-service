@@ -1,15 +1,8 @@
 import { app, query } from 'mu';
 
-app.get('/hello', function(req, res) {
-  res.send('Hello from rekenhof-api');
-});
-
 app.get('/bestuurseenheid-data', async function(req, res) {
-  
-  console.log("received request");
-  console.log(req.query);
-  
   const bestuurseenheid = req.query.bestuurseenheid;
+  const filterAangifteplichtig = req.query.filterAangifteplichtig === 'true';
 
   if (!bestuurseenheid) {
     return res.status(400).send('Missing bestuurseenheid parameter');
@@ -26,6 +19,7 @@ app.get('/bestuurseenheid-data', async function(req, res) {
 
     SELECT DISTINCT ?voornaam ?achternaam ?geboortedatum ?geslacht ?rrn ?bestuursorgaanTijdsspecialisatieLabel ?rolLabel ?statusLabel ?startdatum ?einddatum ?mandataris ?person ?identifier ?holds_mandaat ?rol ?bestuursorgaanTijdsspecialisatie ?bestuursorgaanPermanent ?PubliekeOrganisatie WHERE {
 
+        # Main query for fetching mandataris details
         ?mandataris a mandaat:Mandataris .
         ?mandataris mandaat:isBestuurlijkeAliasVan ?person .
         ?mandataris mandaat:start ?startdatum .
@@ -50,15 +44,35 @@ app.get('/bestuurseenheid-data', async function(req, res) {
         OPTIONAL { ?person adms:identifier ?identifier . 
                   OPTIONAL { ?identifier skos:notation ?rrn . }
         }
-      FILTER (?PubliekeOrganisatie = <${bestuurseenheid}>)
-      FILTER (!(CONTAINS(LCASE(?bestuursorgaanTijdsspecialisatieLabel), "burgemeester") && !CONTAINS(LCASE(?bestuursorgaanTijdsspecialisatieLabel), "college")))
-      FILTER (?statusLabel IN ("Effectief", "Waarnemend"))
+
+        FILTER (?PubliekeOrganisatie = <${bestuurseenheid}>)
+        FILTER NOT EXISTS {
+          ?bestuursorgaanPermanent besluit:classificatie <http://data.vlaanderen.be/id/concept/BestuursorgaanClassificatieCode/4955bd72cd0e4eb895fdbfab08da0284>
+        }
+
+        # Subquery to identify persons with aangifteplichtig mandaten
+        ${filterAangifteplichtig ? `
+        {
+            SELECT DISTINCT ?person WHERE {
+                ?mandataris a mandaat:Mandataris .
+                ?mandataris mandaat:isBestuurlijkeAliasVan ?person .
+                ?mandataris org:holds ?aangifteplichtigMandaat .
+                ?aangifteplichtigMandaat org:role ?aangifteplichtigRol .
+                ?aangifteplichtigRol skos:prefLabel ?aangifteplichtigRolLabel .
+                FILTER (?aangifteplichtigRolLabel IN ("Burgemeester", "Schepen", "Voorzitter van het OCMW"))
+            }
+        }
+        FILTER EXISTS {
+            ?mandataris mandaat:isBestuurlijkeAliasVan ?person .
+        }
+        ` : ''}
+
     } 
-    ORDER BY ?bestuursorgaanTijdsspecialisatieLabel ?rolLabel ?achternaam
-    LIMIT 1000
+    ORDER BY ?bestuursorgaanTijdsspecialisatieLabel ?rolLabel ?achternaam ?voornaam ?startdatum
+
+
+
   `;
-
-
 
   try {
     const response = await query(sparqlQuery);
@@ -68,4 +82,3 @@ app.get('/bestuurseenheid-data', async function(req, res) {
     res.status(500).send('An error occurred while fetching SPARQL query.');
   }
 });
-
